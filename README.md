@@ -30,16 +30,64 @@ El proyecto sigue una arquitectura en capas simple:
 - `exception`: manejo global de errores
 - `config`: configuración técnica, incluyendo OpenAPI
 
-## Plantilla y guías
+
+Plantilla y guías
+-----------------
 
 - Repositorio plantilla: https://github.com/261dist/catalogo/
-- Documentación operativa transversal: [carrera-sistemas-docs-operativos](https://github.com/upeucorporativo/carrera-sistemas-docs-operativos)
-- [Índice único para alumnos](https://github.com/upeucorporativo/carrera-sistemas-docs-operativos/blob/main/00-arquitectura-documentos/indice-alumnos.md)
-- [Estándar de codificación — general](https://github.com/upeucorporativo/carrera-sistemas-docs-operativos/blob/main/04-estandares-operativos/software/estandar-codificacion.md)
-- [Estándar de codificación — microservicios](https://github.com/upeucorporativo/carrera-sistemas-docs-operativos/blob/main/04-estandares-operativos/software/estandar-codificacion-microservicios.md)
-- [Política de ramas y PR](https://github.com/upeucorporativo/carrera-sistemas-docs-operativos/blob/main/04-estandares-operativos/software/politica-ramas-pr.md)
-- [Prompt de alumnos](https://github.com/upeucorporativo/carrera-sistemas-docs-operativos/blob/main/05-plantillas-operativas/software/prompt-alumnos.md)
+- Documentación operativa transversal: https://upeuoficial.github.io/carrera-sistemas-docs-operativos/
+- Estándar de codificación: https://upeuoficial.github.io/carrera-sistemas-docs-operativos/lineas/software/estandares/politica-codificacion/
+- Política de ramas y PR: https://upeuoficial.github.io/carrera-sistemas-docs-operativos/lineas/software/estandares/politica-ramas-pr/
 
+Manual de PR con GitHub Web
+
+Paso 1: Crear el repo en GitHub, de preferencia dentro de una organización
+El repo debe ser creado con sólo el README.md, por ejemplo: mi-repo
+
+```console
+git clone https://github.com/miorg/mi-repo.git
+cd mi-repo
+```
+
+Paso 2: Una vez en su proyecto, actualice su *main* local por si hay cambios, y crea tu rama de trabajo para tu nueva tarea
+
+```console
+git branch
+git pull origin main
+git checkout -b tarea/deploy-doc-vi
+# Hacer el trabajo i
+git branch
+git add .
+git commit -m "feat: doc linea de soft i"
+git push -u origin tarea/deploy-doc-vi
+```
+
+Paso 3: Hacer PR en GitHub Web. Luego, muévate al *main* y luego elimina tu rama de trabajo
+
+```console
+git checkout main
+git pull origin main
+git branch -d tarea/deploy-doc-vi
+git push origin --delete tarea/deploy-doc-vi
+```
+
+Paso 4: Repita el paso 2 y crea tu nueva rama para continuar con la segunda tarea. 
+Ejemplo:
+
+```console
+git branch
+git pull origin main
+git checkout -b tarea/deploy-doc-v2
+# Hacer el trabajo 2
+git branch
+git add .
+git commit -m "feat: doc linea de soft 2"
+git push -u origin tarea/deploy-doc-v2
+git checkout main
+git pull origin main
+git branch -d tarea/deploy-doc-v2
+git push origin --delete tarea/deploy-doc-v2
+```
 Ubicación recomendada para clases/equipos:
 
 - Cada microservicio (`catalogo`, `producto`, `[otro-ms]`) vive en su propio repositorio Git.
