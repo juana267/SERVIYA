@@ -20,7 +20,7 @@ services:
     volumes:
       - mysql_catalogo_data:/var/lib/mysql
     networks:
-      - catalogo-net
+      - catalogo-int
 
   catalogo:
     build: .
@@ -30,6 +30,7 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL}
       CATALOGO_DB_HOST: ${CATALOGO_DB_HOST}
       CATALOGO_DB_PORT: ${CATALOGO_DB_PORT}
       CATALOGO_DB_NAME: ${CATALOGO_DB_NAME}
@@ -38,11 +39,18 @@ services:
     ports:
       - "8082:8082"
     networks:
-      - catalogo-net
+      - catalogo-int
+      - ms-net
 
 volumes:
   mysql_catalogo_data:
 
+#networks:
+#  catalogo-net:
+#    name: catalogo-net
 networks:
-  catalogo-net:
-    name: catalogo-net
+  ms-net:
+    external: true
+    name: ms-net
+  catalogo-int:
+    name: catalogo-int

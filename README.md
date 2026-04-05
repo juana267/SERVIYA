@@ -1,10 +1,10 @@
-# 📦 Microservicio Catálogo
+# Microservicio Catálogo
 
-Este proyecto implementa el **Microservicio Catálogo**, responsable de gestionar entidades del dominio dentro de una arquitectura de microservicios en evolución.
+Microservicio Spring Boot para la gestión del catálogo dentro de una arquitectura de microservicios en evolución.
 
 ---
 
-## 🧱 Estado del proyecto
+## Estado del proyecto
 
 Actualmente incluye:
 
@@ -12,173 +12,148 @@ Actualmente incluye:
 - Persistencia con MySQL
 - Configuración por perfiles (`dev`, `prod`)
 - Contenerización con Docker
+- Integración operativa con **Config Server**
 - Preparado para integración con:
-  - Config Server
-  - Eureka
-  - API Gateway
+  - **Eureka (siguiente paso)**
+  - **API Gateway (después)**
 
 ---
 
-## 🏗️ Arquitectura (visión)
+## Arquitectura (visión)
 
 ```text
-Client → Gateway → Microservicios → Eureka → Config Server
+Client → API Gateway → Microservicios → Eureka → Config Server
 ```
 
 Este repositorio implementa únicamente el microservicio **Catálogo**.
 
-Ubicación recomendada para clases/equipos:
-
-- Cada microservicio (`catalogo`, `producto`, `[otro-ms]`) vive en su propio repositorio Git.
-- Clonar cada repositorio de microservicio dentro de la carpeta `services` para trabajo integrado local.
-- Mantener la infraestructura en un único repositorio `infra` (Config Server, Registry, Gateway, etc.).
-- Estructura sugerida:
-
-```text
-ProyectosMS2026/
-  infra/
-    config-server/
-    registry-server/
-    gateway/
-  services/
-    catalogo/
-    producto/
-    [otro-ms]/
-```
-
 ---
 
-## ⚙️ Stack tecnológico base 2026
-
+## Stack tecnológico base 2026
 
 - Java 17
 - Spring Boot 3.5.x
 - Maven 3.9+
-- MySQL 8 (dentro de docker)
+- MySQL 8
 - Docker
 - Docker Compose
-
-Antes de ejecutar el proyecto, asegúrate de tener instalado:
-
-```bash
-java -version
-mvn -v
-docker -v
-docker compose version
-```
-## Dependencias
-
-- Spring Web
-- Spring Data JPA
-- Validation
-- Lombok
-- MySQL Driver
+- Spring Cloud Config Client
 - Flyway
-- Spring Boot Actuator
-- Spring Boot DevTools
-- SpringDoc OpenAPI Web (Swagger)
-
+- Actuator
+- SpringDoc OpenAPI
 
 ---
 
-## 🔌 Puertos utilizados
+## Puertos utilizados
 
-| Servicio            | Puerto expuesto |
-|--------------------|--------|
-| Aplicación (dev)   | 8081   |
-| Aplicación (prod)  | 8082   |
-| MySQL (dev)        | 3307   |
-| MySQL (prod)       | 3308   |
-
----
-
-## 🔄 Diferencia entre DEV y PROD
-
-| Modo | Ejecución           | Base de datos | Puerto |
-|------|--------------------|--------------|--------|
-| DEV  | Maven              | Docker       | 8081   |
-| PROD | Docker Compose     | Docker       | 8082   |
+| Servicio | Puerto expuesto |
+|---|---:|
+| Aplicación DEV | 8081 |
+| Aplicación PROD | 8082 |
+| MySQL DEV | 3307 |
+| MySQL PROD | 3308 |
+| Config Server DEV | 7071 |
+| Config Server PROD | 7072 |
 
 ---
 
-## Base de datos y migraciones
+## DEV vs PROD
 
-Convención actual:
-
-- Los cambios de esquema deben quedar en SQL versionado
-- Flyway ejecuta automáticamente scripts en `src/main/resources/db/migration` cuando arranca `prod`
-- Ejemplo actual: `V1__create_categoria_table.sql`
-- En `prod`, Hibernate no crea tablas; solo valida el esquema existente
-
-Flujo recomendado del equipo:
-
-1. Diseñar o ajustar la tabla en SQL
-2. Probar el cambio en `dev`
-3. Crear una nueva versión SQL si corresponde (`V2`, `V3`, etc.)
-4. Aplicar el cambio en `prod`
-5. Arrancar la app en `prod` y validar
-
-No modificar scripts ya ejecutados; crear siempre una nueva versión.
-
-# 🚀 Ejecución en modo desarrollo (dev)
-
-## 🔹 1. Clonar repositorio - rama inicial
-
-Ejemplo:
-
-```bash
-git clone git clone --branch vs01-arquitectura-base https://github.com/261dist/catalogo.git
-
-cd catalogo
-```
+| Modo | Ejecución app | Base de datos | Configuración | Puerto app |
+|---|---|---|---|---:|
+| DEV | `mvn spring-boot:run` | Docker/local | Config Server DEV | 8081 |
+| PROD | Docker | Docker | Config Server PROD | 8082 |
 
 ---
 
-## 🔹 2. Levantar base de datos
+# Ejecución DEV con Config Server
 
-```bash
-docker compose -f docker-compose-dev.yml up
-```
-**Si no tienes Docker, otra opción es con Laragon, XAMPP, o MySQL local**
+## Objetivo
 
-- Asegúrate de que MySQL esté corriendo en tu máquina local.
-- Verifica la configuración en `src/main/resources/application-dev.yml` (host, puerto, usuario, contraseña).
-- Confirma que la BD `db_catalogo` existe.
-
+Ejecutar `catalogo` en modo desarrollo consumiendo configuración desde Config Server.
 
 ---
 
-## 🔹 3. Ejecutar aplicación
+## 1. Levantar Config Server (modo DEV)
+
+Desde el proyecto `infra`:
 
 ```bash
 mvn spring-boot:run
 ```
 
-👉 Perfil activo: `dev`
+Acceso:
 
----
-
-## 🌐 Acceso DEV
-Swagger:
 ```
-http://localhost:8081/swagger-ui.html
-```
-Health: 
-```
-http://localhost:8081/actuator/health
+http://localhost:7071/catalogo/dev
 ```
 
 ---
 
-# 🐳 Ejecución en modo producción (prod)
 
-## 🔹 1. Crear archivo `.env`
+---
+
+## 3. Levantar catalogo DEV
+
+MySQL
+```bash
+docker compose -f docker-compose-dev.yml up -d
+```
+
+---
+
+## 4. Ejecutar catalogo
+
+```bash
+mvn spring-boot:run
+```
+
+---
+
+## 5. Probar
+
+```
+http://localhost:8081/swagger-ui/
+```
+
+---
+
+# Ejecución PROD con Config Server
+
+## Objetivo
+
+Ejecutar `catalogo` en contenedor Docker consumiendo configuración externa desde Config Server.
+
+---
+
+## 1. Levantar Config Server (modo PROD)
+
+Desde `infra`:
+
+```bash
+docker compose up 
+```
+```bash
+docker compose up -d config-server
+```
+
+Acceso:
+
+```
+http://localhost:7072/catalogo/prod
+```
+
+---
+
+## 2. Archivo `.env` (modo PROD)
 
 ```env
 CATALOGO_MYSQL_ROOT_PASSWORD=root
 CATALOGO_MYSQL_DATABASE=db_catalogo
 
 SPRING_PROFILES_ACTIVE=prod
+
+CONFIG_SERVER_URL=http://config-server:7071
 
 CATALOGO_DB_HOST=mysql-catalogo
 CATALOGO_DB_PORT=3306
@@ -189,59 +164,76 @@ CATALOGO_DB_PASSWORD=root
 
 ---
 
-## 🔹 2. Levantar servicios
+## 3. Redes utilizadas
+
+- `ms-net` → infraestructura (config-server, futuro eureka, gateway)
+- `catalogo-int` → red interna (mysql + catalogo)
+
+---
+
+## 4. Levantar modo productivo
 
 ```bash
-docker compose -f docker-compose.yml up -d
+docker compose up -d
 ```
 
 ---
 
-## 🌐 Acceso PROD
-API Categorias:
+## 5. Probar
+
 ```
 http://localhost:8082/api/v1/categorias
 ```
-Health:
-```
-http://localhost:8082/actuator/health
-```
-Swagger: deshabilitado
 
 ---
 
-# 📈 Escalado de la aplicación (múltiples instancias)
+# Configuración externa (config-repo)
+
+Archivo esperado:
+
+```
+config-repo/catalogo-dev.yml
+config-repo/catalogo-prod.yml
+```
+
+Ejemplo:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://${CATALOGO_DB_HOST}:${CATALOGO_DB_PORT}/${CATALOGO_DB_NAME}
+    username: ${CATALOGO_DB_USERNAME}
+    password: ${CATALOGO_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+server:
+  port: 8082
+```
 
 ---
 
-## 🔹 Paso 1. Detener entorno previo
+# Escalado manual (sin Eureka)
 
-Antes de iniciar el escalado, detener los servicios que estuvieran levantados previamente:
+## 1. Bajar stack
 
 ```bash
-docker compose -f docker-compose.yml down
+docker compose down
 ```
-Si existieran contenedores manuales anteriores, también eliminarlos:
+
+## 2. Levantar solo MySQL
 
 ```bash
-docker rm -f catalogo1 catalogo2 catalogo3
+docker compose up -d mysql-catalogo
 ```
 
----
-
-## 🔹 Paso 2. Levantar solo MySQL
-
-Levantar únicamente la base de datos del entorno de producción:
-
-```bash
-docker compose -f docker-compose.yml up -d mysql-catalogo
-```
-
----
-
-## 🔹 Paso 3. Construir imagen
-
-Generar la imagen Docker de la aplicación:
+## 3. Construir imagen
 
 ```bash
 docker build -t catalogo-service .
@@ -249,226 +241,93 @@ docker build -t catalogo-service .
 
 ---
 
-## 🔹 Paso 4. Ejecutar instancias
+## 4. Crear instancias
 
-> ⚠️ Nota: En este escenario usamos la red por defecto creada por Docker Compose.
-
-### Instancia 1
-
-```bash
-docker run --name catalogo1 --network catalogo-net --env-file .env -p 8082:8082 catalogo-service
-```
-
-### Instancia 2
-
-```bash
-docker run --name catalogo2 --network catalogo-net --env-file .env -p 8083:8082 catalogo-service
-```
-
----
-
-## 🔹 Paso 5. Verificar
-
-```bash
-docker ps
-```
-
----
-
-## 🔹 Paso 6. Probar
-
-- http://localhost:8082
-- http://localhost:8083
-
----
-
-## 🔹 Paso 7. Finalizar
-
-🧠 Tip pro 
-
-stop → apaga contenedor (como apagar servidor)
-
-rm → elimina contenedor (como borrar VM)
-
-rmi → elimina imagen (como borrar ISO/base)
-```bash
-
-docker stop catalogo1
-docker rm catalogo1
-docker rmi catalogo-service   # opcional
-```
-```bash
-docker rm -f catalogo1 catalogo2 catalogo3
-docker compose -f docker-compose.yml down
-```
-Para ver todos los servicios (incluidos apagados):
-```bash
-docker ps -a
-```
-Detener todos los contenedores
-```bash
-docker stop $(docker ps -q)
-```
-Eliminar todos los contenedores
-```bash
-docker rm $(docker ps -aq)
-```
-Eliminar todas las imágenes
-```bash
-docker rmi $(docker images -q)
-```
-🚀 Eliminar contenedores detenidos, imágenes no usadas, redes, cache
-```bash
-docker system prune -a
-```
-💣 Forma EXTREMA (incluye volúmenes)
-```bash
-docker system prune -a --volumes
-```
----
-
-## 🔹 Ejecución sin `.env` (opcional)
-
-Bash
-```bash
-docker run -d --name catalogo1 \
-  --network catalogo-net \
-  -p 8082:8082 \
-  -e SPRING_PROFILES_ACTIVE=prod \
-  -e CATALOGO_DB_HOST=mysql-catalogo \
-  -e CATALOGO_DB_PORT=3306 \
-  -e CATALOGO_DB_NAME=db_catalogo \
-  -e CATALOGO_DB_USERNAME=root \
-  -e CATALOGO_DB_PASSWORD=root \
+### catalogo1
+```powershell
+docker create `
+  --name catalogo1 `
+  --network ms-net `
+  --env-file .env `
+  -p 8082:8082 `
   catalogo-service
+
+docker network connect catalogo-int catalogo1
+docker start catalogo1
 ```
-PS
-```ps
-docker run --name catalogo3 --network catalogo-net -p 8084:8082 `
-  -e SPRING_PROFILES_ACTIVE=prod `
-  -e CATALOGO_DB_HOST=mysql-catalogo `
-  -e CATALOGO_DB_PORT=3306 `
-  -e CATALOGO_DB_NAME=db_catalogo `
-  -e CATALOGO_DB_USERNAME=root `
-  -e CATALOGO_DB_PASSWORD=root `
+
+### catalogo2
+```powershell
+docker create `
+  --name catalogo2 `
+  --network ms-net `
+  --env-file .env `
+  -p 8083:8082 `
   catalogo-service
+
+docker network connect catalogo-int catalogo2
+docker start catalogo2
+```
+
+### catalogo3
+```powershell
+docker create `
+  --name catalogo3 `
+  --network ms-net `
+  --env-file .env `
+  -p 8084:8082 `
+  catalogo-service
+
+docker network connect catalogo-int catalogo3
+docker start catalogo3
 ```
 
 ---
 
-# 🔗 Integración futura
+## 5. Probar instancias
 
-## Config Server
-
-```properties
-SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:7071
 ```
-
-## Eureka
-
-```properties
-EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-server:8761/eureka
-```
-
-## Gateway
-
-```yaml
-uri: lb://catalogo
+http://localhost:8082/api/v1/categorias
+http://localhost:8083/api/v1/categorias
+http://localhost:8084/api/v1/categorias
 ```
 
 ---
 
-# ⚠️ Alcance actual
+# Problemas resueltos
 
-Este proyecto NO incluye aún:
-
-- API Gateway
-- Eureka
-- Config Server
-- Balanceador
+- Config Server no accesible → faltaba `ms-net`
+- MySQL no accesible → faltaba `catalogo-int`
+- Error datasource → config no cargada
+- Error `UnknownHost` → redes mal conectadas
 
 ---
 
-# 🧠 Concepto clave
+# Estado de avance
 
-Este proyecto es un microservicio que:
-
-- es independiente
-- puede escalar
-- se integrará progresivamente
-
----
-
-# 📌 Nota final
-
-Este repositorio forma parte de una arquitectura de microservicios en evolución.
-
-# 🔧 ANEXO PR (lujo de trabajo con Git)
-
-Este flujo permite trabajar con ramas, enviar cambios y versionar el proyecto de forma ordenada.
+- [x] Config Server
+- [ ] Eureka / Registry Server
+- [ ] API Gateway
+- [ ] Escalado (Gateway + lb://)
+- [ ] Circuit Breaker
+- [ ] Seguridad
+- [ ] Balanceador externo
 
 ---
 
-## 🔹 1. Actualizar repositorio
+# Siguiente paso
+
+Integrar **Eureka** para:
+
+- registrar instancias automáticamente
+- permitir descubrimiento
+- usar `lb://catalogo` desde Gateway
+
+---
+
+# Tag sugerido
 
 ```bash
-git branch
-git pull origin main
+git tag -a vs02-config-server -m "Integración con Config Server"
+git push origin vs02-config-server
 ```
-
----
-
-## 🔹 2. Crear rama de trabajo y hacer el trabajo
-
-```bash
-git checkout -b tarea/avance
-```
-###  ATENCIÓN: NO codees sin hacer los 2 pasos anteriores
-
-
-
-## 🔹 3. Realizar cambios
-
-```bash
-git add .
-git commit -m "feat: avance"
-git push -u origin tarea/avance
-```
-
----
-
-## 🔹 4. Volver a main y limpiar rama
-
-```bash
-git checkout main
-git pull origin main
-
-git branch -d tarea/avance
-git push origin --delete tarea/avance
-```
-
----
-
-## 🔹 5. Crear tag (versión estable)
-
-```bash
-git tag -a vs01 -m "versión estable"
-git push origin vs01
-```
-
----
-
-## 🔹 6. Eliminar tag (si es necesario)
-
-```bash
-git tag -d vs01
-git push origin --delete vs01
-```
-
----
-
-## 📚 Documentación adicional
-
-Ver documentación operativa en:
-
-👉 https://upeuoficial.github.io/carrera-sistemas-docs-operativos/
