@@ -137,7 +137,7 @@ mvn spring-boot:run
 Swagger UI:
 
 ```text
-http://localhost:8081/swagger-ui/
+http://localhost:8081/swagger-ui/index.html
 ```
 
 Registro en Eureka:
@@ -159,7 +159,7 @@ mvn spring-boot:run "-Dspring-boot.run.arguments=--server.port=8085"
 Prueba la segunda instancia:
 
 ```text
-http://localhost:8085/swagger-ui/
+http://localhost:8085/swagger-ui/index.html
 ```
 
 ---
