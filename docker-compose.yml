@@ -1,56 +1,53 @@
-name: catalogo-prod
+name: ms-assignment-prod
 
 version: "3.9"
 
 services:
-  mysql-catalogo:
+  mysql-asignacion:
     image: mysql:8.4
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${CATALOGO_MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${CATALOGO_MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${ASSIGNMENT_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${ASSIGNMENT_MYSQL_DATABASE}
     ports:
       - "3308:3306" # Tu máquina (cliente externo) → MySQL prod
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p${CATALOGO_MYSQL_ROOT_PASSWORD} || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p${ASSIGNMENT_MYSQL_ROOT_PASSWORD} || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 20s
     volumes:
-      - mysql_catalogo_data:/var/lib/mysql
+      - mysql_asignacion_data:/var/lib/mysql
     networks:
-      - catalogo-int
+      - assignment-int
 
-  catalogo:
+  ms-assignment:
     build: .
     restart: unless-stopped
     depends_on:
-      mysql-catalogo:
+      mysql-asignacion:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       CONFIG_SERVER_URL: ${CONFIG_SERVER_URL}
-      CATALOGO_DB_HOST: ${CATALOGO_DB_HOST}
-      CATALOGO_DB_PORT: ${CATALOGO_DB_PORT}
-      CATALOGO_DB_NAME: ${CATALOGO_DB_NAME}
-      CATALOGO_DB_USERNAME: ${CATALOGO_DB_USERNAME}
-      CATALOGO_DB_PASSWORD: ${CATALOGO_DB_PASSWORD}
+      ASSIGNMENT_DB_HOST: ${ASSIGNMENT_DB_HOST}
+      ASSIGNMENT_DB_PORT: ${ASSIGNMENT_DB_PORT}
+      ASSIGNMENT_DB_NAME: ${ASSIGNMENT_DB_NAME}
+      ASSIGNMENT_DB_USERNAME: ${ASSIGNMENT_DB_USERNAME}
+      ASSIGNMENT_DB_PASSWORD: ${ASSIGNMENT_DB_PASSWORD}
     ports:
       - "8082:8082"
     networks:
-      - catalogo-int
+      - assignment-int
       - ms-net
 
 volumes:
-  mysql_catalogo_data:
+  mysql_asignacion_data:
 
-#networks:
-#  catalogo-net:
-#    name: catalogo-net
 networks:
   ms-net:
     external: true
     name: ms-net
-  catalogo-int:
-    name: catalogo-int
+  assignment-int:
+    name: assignment-int

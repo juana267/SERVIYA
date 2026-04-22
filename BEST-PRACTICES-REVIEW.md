@@ -1,4 +1,4 @@
-# Revisión de Mejores Prácticas - Microservicio `catalogo`
+# Revisión de Mejores Prácticas - Microservicio `ms-assignment`
 
 Evaluación técnica desde cero del estado actual del proyecto contra estándares de microservicios con Spring Boot.
 
@@ -7,9 +7,9 @@ Evaluación técnica desde cero del estado actual del proyecto contra estándare
 - Código fuente de controller, service, exception handler, OpenAPI y filter de trazabilidad.
 - Configuración por perfiles (`application.yml`, `application-dev.yml`, `application-prod.yml`).
 - Dependencias y build (`pom.xml`).
-- Migración Flyway (`V1__create_categoria_table.sql`).
+- Migración Flyway (`V2__create_asignaciones_and_config_reglas.sql`).
 - Pruebas unitarias/web (`controller`, `service`, `mapper`, `contextLoads`).
-- Resultado actual de pruebas: **12/12 exitosas**.
+- Resultado actual de pruebas: **OK**.
 
 ---
 
@@ -17,7 +17,7 @@ Evaluación técnica desde cero del estado actual del proyecto contra estándare
 
 ### Arquitectura y mantenibilidad
 - Separación clara por capas: `controller` → `service` → `repository`.
-- Uso de DTOs (`CategoriaRequest/Response`) para no exponer entidades.
+- Uso de DTOs (`AsignacionResponse`, `ActualizarEstadoSolicitudRequest`) para no exponer entidades.
 - Mapper dedicado para conversión entidad/DTO.
 - Manejo centralizado de errores con `@RestControllerAdvice`.
 
@@ -45,7 +45,7 @@ Evaluación técnica desde cero del estado actual del proyecto contra estándare
 
 - Existe `CorrelationIdFilter` que inyecta/propaga `X-Trace-ID`.
 - `logback-spring.xml` ya imprime `[%X{traceId}]`.
-- `CategoriaServiceImpl` ya emite logs en operaciones CRUD.
+- `AsignacionService` ya emite logs y aplica Circuit Breaker en llamadas Feign.
 
 **Siguiente mejora recomendada:**
 - Estandarizar estructura de logs para todos los módulos nuevos (`producto`, `ventas`, etc.).
@@ -56,7 +56,7 @@ Evaluación técnica desde cero del estado actual del proyecto contra estándare
 ### 2) API Versioning
 **Estado:** ✅ Implementado.
 
-- Endpoints expuestos en `/api/v1/categorias`.
+- Endpoints expuestos en `/api/v1/asignaciones`.
 
 **Siguiente mejora recomendada:**
 - Mantener estrategia URL-based en todos los nuevos microservicios.
@@ -140,6 +140,6 @@ Evaluación técnica desde cero del estado actual del proyecto contra estándare
 
 ## Conclusión
 
-`catalogo` está en un **estado base sólido y reusable como plantilla** para iniciar `ms-producto`.
+`ms-assignment` está en un **estado base sólido y reusable como plantilla** para iniciar otros microservicios.
 
 No hay bloqueadores críticos para clonar la base. Las brechas principales son evolutivas (métricas, seguridad centralizada, resiliencia e integración tests) y encajan con tu roadmap: **Config Server → Eureka → Gateway**.

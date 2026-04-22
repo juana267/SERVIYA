@@ -1,18 +1,18 @@
-name: catalogo-dev
+name: ms-assignment-dev
 
 version: "3.9"
 
 services:
-  mysql-catalogo-dev:
+  mysql-asignacion-dev:
     image: mysql:8.4
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_catalogo
+      MYSQL_DATABASE: db_asignacion
     ports:
       - "3307:3306" # Tu máquina (cliente externo) → MySQL dev	
     volumes:
-      - mysql_catalogo_dev_data:/var/lib/mysql
+      - mysql_asignacion_dev_data:/var/lib/mysql
 
 volumes:
-  mysql_catalogo_dev_data:
+  mysql_asignacion_dev_data:

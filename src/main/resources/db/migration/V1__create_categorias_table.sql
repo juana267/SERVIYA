@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS categorias (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion VARCHAR(255),
-    PRIMARY KEY (id)
-);
