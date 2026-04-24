@@ -1,0 +1,22 @@
+services:
+  registry-server:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  gateway:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  service-request-1:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      EUREKA_ENABLED: "true"
+      EUREKA_CLIENT_ENABLED: "true"
+      SPRING_CLOUD_DISCOVERY_ENABLED: "true"
+
+  service-request-2:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      EUREKA_ENABLED: "true"
+      EUREKA_CLIENT_ENABLED: "true"
+      SPRING_CLOUD_DISCOVERY_ENABLED: "true"

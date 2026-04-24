@@ -1,0 +1,26 @@
+server:
+  port: 7081
+
+spring:
+  application:
+    name: registry-server
+  profiles:
+    active: dev
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:7071}"
+
+eureka:
+  instance:
+    hostname: registry-server
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://registry-server:7081/eureka/}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+

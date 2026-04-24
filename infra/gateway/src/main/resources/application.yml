@@ -1,0 +1,54 @@
+server:
+  port: 7091
+
+spring:
+  application:
+    name: gateway
+  profiles:
+    active: dev
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:7071}"
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: gateway-home
+              uri: no://op
+              predicates:
+                - Path=/
+              filters:
+                - RedirectTo=302, /swagger-ui.html
+            - id: service-request-route
+              uri: lb://MS-SERVICE-REQUEST
+              predicates:
+                - Path=/api/v1/servicios/**,/api/v1/categorias/**
+            - id: service-request-instancia
+              uri: lb://MS-SERVICE-REQUEST
+              predicates:
+                - Path=/api/v1/service-request/instancia
+            - id: service-request-swagger
+              uri: lb://MS-SERVICE-REQUEST
+              predicates:
+                - Path=/swagger-ui.html,/swagger-ui/**,/v3/api-docs/**,/ms-service-request/swagger-ui.html,/ms-service-request/swagger-ui/**,/ms-service-request/v3/api-docs/**
+              filters:
+                - RewritePath=/ms-service-request/(?<segment>.*), /${segment}
+
+eureka:
+  client:
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://registry-server:7081/eureka/}
+  instance:
+    hostname: gateway
+    prefer-ip-address: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+

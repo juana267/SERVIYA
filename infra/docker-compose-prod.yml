@@ -1,0 +1,8 @@
+services:
+  registry-server:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  gateway:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod

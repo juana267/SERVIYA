@@ -1,0 +1,80 @@
+services:
+  mysql-service-request:
+    image: mysql:8.0
+    container_name: mysql-service-request
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_ms_service_request
+    ports:
+      - "3313:3306"
+    volumes:
+      - mysql-service-request-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 25s
+    networks:
+      - job-net
+
+  ms-service-request-1:
+    build: .
+    container_name: ms-service-request-1
+    depends_on:
+      mysql-service-request:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8003
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql-service-request
+      DB_PORT: 3306
+      DB_NAME: db_ms_service_request
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      CONFIG_SERVER_URL: http://config-server:7071
+      EUREKA_DEFAULT_ZONE: http://registry-server:7081/eureka
+      EUREKA_INSTANCE_HOSTNAME: ms-service-request-1
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      JWT_SECRET: VGhpc0lzQVN1cGVyU2VjdXJlSldUU2VjcmV0S2V5Rm9yTXNVc2VyczIwMjY=
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+    networks:
+      - job-net
+      - ms-net
+
+  ms-service-request-2:
+    build: .
+    container_name: ms-service-request-2
+    depends_on:
+      mysql-service-request:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8004
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql-service-request
+      DB_PORT: 3306
+      DB_NAME: db_ms_service_request
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      CONFIG_SERVER_URL: http://config-server:7071
+      EUREKA_DEFAULT_ZONE: http://registry-server:7081/eureka
+      EUREKA_INSTANCE_HOSTNAME: ms-service-request-2
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      JWT_SECRET: VGhpc0lzQVN1cGVyU2VjdXJlSldUU2VjcmV0S2V5Rm9yTXNVc2VyczIwMjY=
+    ports:
+      - "8004:8004"
+    restart: unless-stopped
+    networks:
+      - job-net
+      - ms-net
+
+volumes:
+  mysql-service-request-data:
+
+networks:
+  ms-net:
+    external: true
+  job-net:
+    name: job-net

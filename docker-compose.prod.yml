@@ -1,0 +1,18 @@
+services:
+  registry-server:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  gateway:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  service-request-1:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_ENABLED: "true"
+
+  service-request-2:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      EUREKA_ENABLED: "true"
