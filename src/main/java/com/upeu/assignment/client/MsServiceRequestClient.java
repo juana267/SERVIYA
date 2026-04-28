@@ -1,6 +1,6 @@
-package com.upeu.client;
+package com.upeu.assignment.client;
 
-import com.upeu.dto.ActualizarEstadoSolicitudRequest;
+import com.upeu.assignment.dto.ActualizarEstadoSolicitudRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;

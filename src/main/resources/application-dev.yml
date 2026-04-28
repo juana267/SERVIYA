@@ -1,0 +1,16 @@
+server:
+  port: 8085
+
+spring:
+  datasource:
+    url: jdbc:mysql://${ASSIGNMENT_DB_HOST:localhost}:${ASSIGNMENT_DB_PORT:3307}/${ASSIGNMENT_DB_NAME:db_asignacion}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${ASSIGNMENT_DB_USERNAME:root}
+    password: ${ASSIGNMENT_DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  flyway:
+    enabled: true

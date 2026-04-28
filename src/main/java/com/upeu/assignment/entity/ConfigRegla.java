@@ -1,4 +1,4 @@
-package com.upeu.entity;
+package com.upeu.assignment.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

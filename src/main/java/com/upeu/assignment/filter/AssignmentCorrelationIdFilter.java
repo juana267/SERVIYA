@@ -1,4 +1,4 @@
-package com.upeu.filter;
+package com.upeu.assignment.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

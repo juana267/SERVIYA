@@ -1,6 +1,6 @@
-package com.upeu.client;
+package com.upeu.assignment.client;
 
-import com.upeu.dto.TecnicoCercanoDto;
+import com.upeu.assignment.dto.TecnicoCercanoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

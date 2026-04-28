@@ -1,6 +1,6 @@
-package com.upeu;
+package com.upeu.assignment;
 
-import com.upeu.config.AssignmentFeignConfig;
+import com.upeu.assignment.config.AssignmentFeignConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;

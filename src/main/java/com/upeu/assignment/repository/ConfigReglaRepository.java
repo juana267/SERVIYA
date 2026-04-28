@@ -1,6 +1,6 @@
-package com.upeu.repository;
+package com.upeu.assignment.repository;
 
-import com.upeu.entity.ConfigRegla;
+import com.upeu.assignment.entity.ConfigRegla;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

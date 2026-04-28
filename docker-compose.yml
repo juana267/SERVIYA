@@ -37,7 +37,7 @@ services:
       ASSIGNMENT_DB_USERNAME: ${ASSIGNMENT_DB_USERNAME}
       ASSIGNMENT_DB_PASSWORD: ${ASSIGNMENT_DB_PASSWORD}
     ports:
-      - "8082:8082"
+      - "8085:8085"
     networks:
       - assignment-int
       - ms-net

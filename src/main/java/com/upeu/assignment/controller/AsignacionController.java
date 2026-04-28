@@ -1,7 +1,7 @@
-package com.upeu.controller;
+package com.upeu.assignment.controller;
 
-import com.upeu.dto.AsignacionResponse;
-import com.upeu.service.AsignacionService;
+import com.upeu.assignment.dto.AsignacionResponse;
+import com.upeu.assignment.service.AsignacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;

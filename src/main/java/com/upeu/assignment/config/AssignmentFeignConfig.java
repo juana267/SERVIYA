@@ -1,4 +1,4 @@
-package com.upeu.config;
+package com.upeu.assignment.config;
 
 import feign.RequestInterceptor;
 import org.slf4j.MDC;

@@ -1,7 +1,7 @@
-package com.upeu.mapper;
+package com.upeu.assignment.mapper;
 
-import com.upeu.dto.AsignacionResponse;
-import com.upeu.entity.Asignacion;
+import com.upeu.assignment.dto.AsignacionResponse;
+import com.upeu.assignment.entity.Asignacion;
 import org.springframework.stereotype.Component;
 
 @Component
